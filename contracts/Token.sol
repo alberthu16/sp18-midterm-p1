@@ -17,6 +17,7 @@ contract Token is ERC20Interface {
 
     // event Transfer(address indexed _from, address indexed _to, uint256 _value);
     // event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+    event Burn(address indexed _owner, uint256 _value);
 
     /// @param _owner The address from which the balance will be retrieved
     /// @return The balance
@@ -67,5 +68,18 @@ contract Token is ERC20Interface {
     /// @return Amount of remaining tokens allowed to spent
     function allowance(address _owner, address _spender) constant returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function setTotalSupply(uint256 _totalSupply) returns (bool success) {
+        totalSupply = _totalSupply;
+        return true;
+    }
+
+    function burn(uint256 _value) returns (bool success) {
+        require(balances[msg.sender] >= _value && totalSupply >= _value);
+        totalSupply -= _value;
+        balances[msg.sender] -= value;
+        Burn(msg.sender, _value);
+        return true;
     }
 }
