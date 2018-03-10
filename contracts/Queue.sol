@@ -15,7 +15,7 @@ contract Queue {
     uint8 totalPeopleWaiting = 0;
     uint8 indexOfFirst = 0;
     uint8 indexOfLast = 0;
-    uint firstPositionTimestamp;
+    uint firstPositionTimestamp = 0;
     mapping(uint8 => address) positionToAddr;
     mapping(address => uint8) addrToPosition;
 
@@ -59,7 +59,7 @@ contract Queue {
      */
     function checkTime() {
         // YOUR CODE HERE
-        if (firstPositionTimestamp + maxTimeInFirst <= now) {
+        if (firstPositionTimestamp != 0 && (firstPositionTimestamp + maxTimeInFirst <= now)) {
             dequeue();
         }
     }
@@ -85,6 +85,9 @@ contract Queue {
     function enqueue(address addr) {
         // YOUR CODE HERE
         if (totalPeopleWaiting < size) {
+            if (totalPeopleWaiting == 0) {
+                firstPositionTimestamp = now;
+            }
             positionToAddr[indexOfLast] = addr;
             addrToPosition[addr] = indexOfLast;
             indexOfLast = (indexOfLast + 1) % size;
